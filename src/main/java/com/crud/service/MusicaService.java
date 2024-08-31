@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MusicaService {
@@ -18,6 +19,13 @@ public class MusicaService {
     }
 
     public Musica getMusicaById(Long id){
+        Optional<Musica> musica = musicaRepository.findById(id);
+        if(musica.isPresent()){
+            return musica.get();
+        } else {
+            System.out.println("Musica not found with id: " + id);
+            return null;
+        }
     }
 
     public Musica createMusica(Musica musica){
