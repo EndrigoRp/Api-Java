@@ -16,31 +16,31 @@ public class MusicaController {
     private MusicaService service;
 
     @GetMapping
-    public List<Musica> getAllMusicas(){
-        return service.getAllMusicas();
+    public List<Musica> listarTodos(){
+        return service.listarTodos();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Musica> getMusicaById(@PathVariable Long id){
-        Musica musica = service.getMusicaById(id);
-        return ResponseEntity.ok().body(musica);
+    public ResponseEntity<Musica> buscarPorId(@PathVariable Long id){
+        return service.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public Musica createMusica(@RequestBody Musica musica){
-        return service.createMusica(musica);
+        return service.salvar(musica);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Musica> updateMusica(@PathVariable Long id,
-                                               @RequestBody Musica musicaDetails){
-        Musica updateMusica = service.updateMusica(id, musicaDetails);
-        return ResponseEntity.ok(updateMusica);
+    public ResponseEntity<Musica> atualizar(@PathVariable Long id,
+                                               @RequestBody Musica musica){
+        return ResponseEntity.ok(service.atualizar(id, musica));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMusica(@PathVariable Long id){
-        service.deleteMusica(id);
+    public ResponseEntity<Void> deletar(@PathVariable Long id){
+        service.deletar(id);
         return ResponseEntity.noContent().build();
     }
 

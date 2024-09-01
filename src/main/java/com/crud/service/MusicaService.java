@@ -14,32 +14,27 @@ public class MusicaService {
     @Autowired
     private MusicaRepository musicaRepository;
 
-    public List<Musica> getAllMusicas(){
+    public List<Musica> listarTodos(){
         return musicaRepository.findAll();
     }
 
-    public Musica getMusicaById(Long id){
-        Optional<Musica> musica = musicaRepository.findById(id);
-        if(musica.isPresent()){
-            return musica.get();
-        } else {
-            System.out.println("Musica not found with id: " + id);
-            return null;
+    public Optional<Musica> buscarPorId(Long id){
+        return musicaRepository.findById(id);
+    }
+
+    public Musica salvar(Musica musica){
+        return musicaRepository.save(musica);
+    }
+
+    public Musica atualizar(Long id, Musica musica){
+        if(musicaRepository.existsById(id)){
+            throw new RuntimeException("Musica não encontrada");
         }
-    }
-
-    public Musica createMusica(Musica musica){
+        musica.setId(id);
         return musicaRepository.save(musica);
     }
 
-    public Musica updateMusica(Long id, Musica musicaDetails){
-        Musica musica = getMusicaById(id);
-        musica.setName(musicaDetails.getName());
-        musica.setGenero(musica.getGenero());
-        return musicaRepository.save(musica);
-    }
-
-    public void deleteMusica(Long id){
+    public void deletar(Long id){
         musicaRepository.deleteById(id);
     }
 }
