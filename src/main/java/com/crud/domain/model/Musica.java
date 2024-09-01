@@ -1,4 +1,4 @@
-package com.crud.model;
+package com.crud.domain.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

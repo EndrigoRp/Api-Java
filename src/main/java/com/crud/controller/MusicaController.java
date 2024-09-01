@@ -1,7 +1,8 @@
 package com.crud.controller;
 
-import com.crud.model.Musica;
-import com.crud.service.MusicaService;
+import com.crud.domain.model.Musica;
+import com.crud.domain.repository.MusicaRepository;
+import com.crud.domain.service.MusicaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/com/crud")
 public class MusicaController {
+
+    @Autowired
+    private MusicaRepository repository;
 
     @Autowired
     private MusicaService service;
@@ -27,8 +31,11 @@ public class MusicaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    @PostMapping("/{id}")
     public Musica createMusica(@RequestBody Musica musica){
+        if(repository.existsById(musica.getId())){
+            throw new RuntimeException("Musica já existe com ID: " + musica.getId());
+        }
         return service.salvar(musica);
     }
 
