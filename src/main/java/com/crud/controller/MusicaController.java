@@ -3,14 +3,16 @@ package com.crud.controller;
 import com.crud.domain.model.Musica;
 import com.crud.domain.repository.MusicaRepository;
 import com.crud.domain.service.MusicaService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/com/crud")
+@RequestMapping("/musicas")
 public class MusicaController {
 
     @Autowired
@@ -20,35 +22,38 @@ public class MusicaController {
     private MusicaService service;
 
     @GetMapping
-    public List<Musica> listarTodos(){
-        return service.listarTodos();
+    public List<Musica> listar(){
+        return repository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Musica> buscarPorId(@PathVariable Long id){
-        return service.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/{musicaId}")
+    public Musica buscar(@PathVariable Long musicaId){
+        return service.buscarOuFalhar(musicaId);
     }
 
     @PostMapping("/{id}")
-    public Musica createMusica(@RequestBody Musica musica){
+    @ResponseStatus(HttpStatus.CREATED)
+    public Musica adicionar(@RequestBody Musica musica){
         if(repository.existsById(musica.getId())){
             throw new RuntimeException("Musica já existe com ID: " + musica.getId());
         }
         return service.salvar(musica);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Musica> atualizar(@PathVariable Long id,
-                                               @RequestBody Musica musica){
-        return ResponseEntity.ok(service.atualizar(id, musica));
+    @PutMapping("/{musicaId}")
+    public Musica atualizar(@PathVariable Long musicaId,
+                            @RequestBody Musica musica){
+            Musica musicaAtual = service.buscarOuFalhar(musicaId);
+
+        BeanUtils.copyProperties(musica, musicaAtual, "id");
+
+        return service.salvar(musicaAtual);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id){
-        service.deletar(id);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{musicaId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletar(@PathVariable Long musicaId){
+        service.excluir(musicaId);
     }
 
 }
