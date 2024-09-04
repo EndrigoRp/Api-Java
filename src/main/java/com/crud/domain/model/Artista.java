@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Data
@@ -24,8 +22,4 @@ public class Artista {
 
     @Column(length = 1000)
     private String biografia;
-
-    @OneToMany(mappedBy = "artista")
-    private List<Musica> musicas = new ArrayList<>();
-
 }
