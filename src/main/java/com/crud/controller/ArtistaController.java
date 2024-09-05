@@ -5,6 +5,7 @@ import com.crud.domain.repository.ArtistaRepository;
 import com.crud.domain.service.ArtistaService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,22 +48,10 @@ public class ArtistaController {
         return service.salvar(artistaAtual);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @DeleteMapping("/{artistaId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletar(@PathVariable Long artistaId){
+        service.excluir(artistaId);
+    }
 
 }
